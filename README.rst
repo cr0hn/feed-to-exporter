@@ -31,10 +31,10 @@ The mapping file has this format:
 Mapping key
 +++++++++++
 
-`mapping` indicates how `f2w` must match the input feed values to the wordpress result.
+``mapping`` indicates how ``f2w`` must match the input feed values to the wordpress result.
 
 - Left values of mapping (title, content, link) are always the same.
-- Right values are the key names in feed where `f2w` must map to the output.
+- Right values are the key names in feed where ``f2w`` must map to the output.
 
 For example:
 
@@ -82,7 +82,7 @@ This implies that we'll have these keys:
 - pubDate
 - guid
 
-Then, if we want to recover the title, description and published date, we must write this `mapping.json`:
+Then, if we want to recover the title, description and published date, we must write this ``mapping.json``:
 
 .. code-block:: json
 
@@ -101,14 +101,14 @@ Some times it should be interesting to add some static values to the post result
 
 You can specify any values as keys but **only tags and categories** have sense to be send to Wordpress API.
 
-You can specify *tags* and *categories*. `f2w` will try to resolve the tag/category or create if it doesn't exits.
+You can specify *tags* and *categories*. ``f2w`` will try to resolve the tag/category or create if it doesn't exits.
 
 Filters
 -------
 
 There's situations where you can want to apply some advanced filters. You can do data adding some Python code.
 
-You can use any name for the filter file, but for convention we'll use `filters.py`. There a basic example:
+You can use any name for the filter file, but for convention we'll use ``filters.py``. There a basic example:
 
 Basics
 ++++++
@@ -134,7 +134,7 @@ Basics
     # THIS VAR NAME IS OPTIONAL!
     VALIDATION_FILTER = validation_filter
 
-As you can see you must define the var name `FILTER_RULES` that indicates the field where it will apply the filter.
+As you can see you must define the var name ``FILTER_RULES`` that indicates the field where it will apply the filter.
 
 Filters **always** must return a dictionary and it can overwrite the original content of a field.
 
@@ -142,7 +142,7 @@ The parameters passed in each filter function is the value of the field.
 
 Input fields
 ++++++++++++
-
+`
 The object that ``f2w`` handles is like that:
 
 .. code-block:: json
@@ -165,7 +165,7 @@ You can write a filter for each key.
 Validation rule
 +++++++++++++++
 
-Some times you could want to use a global validation rule. This validation could implies more than one field. If this is the case then you must use the a new function and map to `VALIDATION_FILTER` variable.
+Some times you could want to use a global validation rule. This validation could implies more than one field. If this is the case then you must use the a new function and map to ``VALIDATION_FILTER`` variable.
 
 This function must returns a **boolean** value: True, validations pass. False, otherwise.
 
@@ -178,7 +178,7 @@ Basic
 
     > f2w -W https://mysite.com -U user -m examples/mapping.json -A "XXXX XXXX XXXX XXXX XXXX XXXX" "http://www.mjusticia.gob.es/cs/Satellite?c=Page&cid=1215197792452&lang=es_es&pagename=eSEDE%2FPage%2FSE_DetalleRSS"
 
-Where `-A` indicates the Application Password
+Where ``-A`` indicates the Application Password
 
 Using a filter file:
 
