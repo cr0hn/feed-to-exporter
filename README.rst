@@ -150,13 +150,13 @@ The object that `f2w` handles is like that:
     {
         "title": "My Custom Title for the Post",
         "slug": "my-custom-title-for-post",
-        "content": "long description for the post"
-        "date": "2018-07-11T21:11:20"
-        "format" = "standard"
-        "status" = "draft"
-        "comment_status" = "closed"
-        "ping_status" = "closed"
-        "tags": ["1", "2"]
+        "content": "long description for the post",
+        "date": "2018-07-11T21:11:20",
+        "format" = "standard",
+        "status" = "draft",
+        "comment_status" = "closed",
+        "ping_status" = "closed",
+        "tags": ["1", "2"],
         "categories": ["4", "5"]
     }
 
@@ -179,6 +179,13 @@ Basic
     > f2w -W https://mysite.com -U user -m examples/mapping.json -A "XXXX XXXX XXXX XXXX XXXX XXXX" "http://www.mjusticia.gob.es/cs/Satellite?c=Page&cid=1215197792452&lang=es_es&pagename=eSEDE%2FPage%2FSE_DetalleRSS"
 
 Where `-A` indicates the Application Password
+
+Using a filter file:
+
+.. code-block:: bash
+
+    > f2w -W https://mysite.com -F filters.py -U user -m examples/mapping.json -A "XXXX XXXX XXXX XXXX XXXX XXXX" "http://www.mjusticia.gob.es/cs/Satellite?c=Page&cid=1215197792452&lang=es_es&pagename=eSEDE%2FPage%2FSE_DetalleRSS"
+
 
 
 Contributing
