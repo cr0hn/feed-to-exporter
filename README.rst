@@ -152,10 +152,10 @@ The object that `f2w` handles is like that:
         "slug": "my-custom-title-for-post",
         "content": "long description for the post",
         "date": "2018-07-11T21:11:20",
-        "format" = "standard",
-        "status" = "draft",
-        "comment_status" = "closed",
-        "ping_status" = "closed",
+        "format": "standard",
+        "status": "draft",
+        "comment_status": "closed",
+        "ping_status": "closed",
         "tags": ["1", "2"],
         "categories": ["4", "5"]
     }
