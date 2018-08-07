@@ -143,7 +143,7 @@ The parameters passed in each filter function is the value of the field.
 Input fields
 ++++++++++++
 
-The object that `f2w` handles is like that:
+The object that ``f2w`` handles is like that:
 
 .. code-block:: json
 
