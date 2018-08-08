@@ -353,7 +353,7 @@ Running normal mode:
         -e F2W_MAPPING=/tmp/mapping.json \
         -e F2W_APPLICATION_PASSWORD="XXXX XXXX XXXX XXXX XXXX XXXX" \
         -e F2W_FEED="http://www.mjusticia.gob.es/cs/Satellite?c=Page&cid=1215197792452&lang=es_es&pagename=eSEDE%2FPage%2FSE_DetalleRSS" \
-        cr0hn/f2w
+        cr0hn/feed-to-wordpress
 
 Running discover mode:
 
@@ -367,7 +367,7 @@ Running discover mode:
         -e F2W_DISCOVER_MODE=1 \
         -e F2W_APPLICATION_PASSWORD="XXXX XXXX XXXX XXXX XXXX XXXX" \
         -e F2W_FEED="/tmp/myfeeds" \
-        cr0hn/f2w
+        cr0hn/feed-to-wordpress
 
 
 Contributing
