@@ -10,7 +10,7 @@ from .exceptions import FeedToWordpressException, \
     FeedToWordpressNotValidInfoFound
 
 
-class FeedInfo:
+class FeedInfo(object):
 
     def __init__(self,
                  app_config: AppConfig,
@@ -179,9 +179,20 @@ def parse_entries(config: AppConfig):
     print(f"[*] Parsed feed source: '{source}'")
 
     for i, new in enumerate(d['entries'], start=1):
+        pp = new.published_parsed
+        date = datetime.datetime(
+            pp.tm_year,
+            pp.tm_mon,
+            pp.tm_mday,
+            pp.hour,
+            pp.min,
+            pp.sec).strftime(
+            "%Y-%m-%dT%H:%M:%S")
+
         feed_result = FeedInfo(app_config=config,
                                raw_feed_info=new,
                                title=new['title'],
+                               date=date,
                                feed_source=source)
 
         print(f"<*> Processing entry: '{i}' - {feed_result.title}")
