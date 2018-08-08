@@ -21,7 +21,7 @@ setup(
     install_requires=required,
     include_package_data=True,
     url='https://github.com/cr0hn/feed-to-wordpress',
-    license='MIT',
+    license='BSD 3 License',
     author='cr0hn[-at-]cr0hn.com',
     description='Transform an input RSS feed to Wordpress Post',
     entry_points={'console_scripts': [
@@ -31,7 +31,7 @@ setup(
         'Environment :: Console',
         'Intended Audience :: System Administrators',
         'Intended Audience :: Other Audience',
-        'License :: OSI Approved :: MIT',
+        'License :: OSI Approved :: BSD License',
         'Operating System :: MacOS',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
