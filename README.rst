@@ -281,6 +281,20 @@ To enable this mode you must use the ``-D`` option and each m¡``mapping.json`` 
       }
     }
 
+**Example of directory structure**
+
+.. code-block:: bash
+
+    > tree examples/
+    examples
+    ├── site1.com
+    │   ├── filters.py
+    │   └── mapping.json
+    └── other-site.com
+        ├── f2wSkip
+        ├── filters.py
+        └── mapping.json
+
 **Ignoring directory**
 
 If you want that a directory will be ignored, only create a file called ``f2wSkip`` into the directory and the engine will ignore it.
@@ -323,9 +337,10 @@ Using Docker
 - F2W_USER: Wordpress user
 - F2W_MAPPING: mapping.json location
 - F2W_APPLICATION_PASSWORD: Application password
-- F2W_FEED_URL: Feed URL to parse
+- F2W_FEED: Feed URL or path
+- F2W_DISCOVER_MODE: Feed URL or path
 
-Running:
+Running normal mode:
 
 .. code-block:: bash
 
@@ -337,7 +352,21 @@ Running:
         -e F2W_USER=user \
         -e F2W_MAPPING=/tmp/mapping.json \
         -e F2W_APPLICATION_PASSWORD="XXXX XXXX XXXX XXXX XXXX XXXX" \
-        -e F2W_FEED_URL="http://www.mjusticia.gob.es/cs/Satellite?c=Page&cid=1215197792452&lang=es_es&pagename=eSEDE%2FPage%2FSE_DetalleRSS" \
+        -e F2W_FEED="http://www.mjusticia.gob.es/cs/Satellite?c=Page&cid=1215197792452&lang=es_es&pagename=eSEDE%2FPage%2FSE_DetalleRSS" \
+        cr0hn/f2w
+
+Running discover mode:
+
+.. code-block:: bash
+
+    > ls examples/
+    filters.py mapping.json
+
+    > docker run --rm -v "$(pwd)/examples/":/tmp/myfeeds -e F2W_WORDPRESS_SITE=https://mysite.com \
+        -e F2W_USER=user \
+        -e F2W_DISCOVER_MODE=1 \
+        -e F2W_APPLICATION_PASSWORD="XXXX XXXX XXXX XXXX XXXX XXXX" \
+        -e F2W_FEED="/tmp/myfeeds" \
         cr0hn/f2w
 
 
