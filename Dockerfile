@@ -5,7 +5,6 @@ RUN pip install -U pip \
 
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN pip install -U feed-to-wordpress \
-RUN pip install -U /temp/feed-to-wordpress-1.0.0.tar.gz \
     && chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
