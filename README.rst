@@ -233,17 +233,20 @@ Input fields
 FeedInfo has these properties:
 
 - title: str
+- slug: str
 - app_config: str
 - link: str
 - feed_source: str
 - body: str -> raw information from Feed mapping
 - content: str -> content that will send to the Wordpress Post. By default is a composition of: body + html link + feed_source. You can see at internal filters (``feed_to_wordpress.filters.py``)
 - raw_feed_info: dict -> raw content of feed
-- pint_status: str (default: closed)
+- ping_status: str (default: closed)
 - feed_source: str (default: closed)
 - post_status: str (default: draft)
 - comment_status: str (default: closed)
 - date: str (default: now time, with format: %Y-%m-%dT%H:%M:%S)
+
+For fields ``ping_status``, ``feed_source``, ``post_status`` and ``comment_status`` you can check valid values at Wordpress REST API doc: https://developer.wordpress.org/rest-api/
 
 Validation rule
 +++++++++++++++

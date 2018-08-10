@@ -23,7 +23,7 @@ class FeedInfo(object):
                  date: str = None):
         self.title = title
         self.app_config = app_config
-        self.pint_status = pint_status
+        self.ping_status = pint_status
         self.feed_source = feed_source
         self.post_status = post_status
         self.raw_feed_info = raw_feed_info
@@ -78,7 +78,7 @@ class FeedInfo(object):
             'format': 'standard',
             'status': self.post_status,
             'comment_status': self.comment_status,
-            'ping_status': self.pint_status,
+            'ping_status': self.ping_status,
             'tags': self.tags,
             'categories': self.categories
         }
