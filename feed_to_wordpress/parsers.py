@@ -184,9 +184,9 @@ def parse_entries(config: AppConfig):
             pp.tm_year,
             pp.tm_mon,
             pp.tm_mday,
-            pp.hour,
-            pp.min,
-            pp.sec).strftime(
+            pp.tm_hour,
+            pp.tm_min,
+            pp.tm_sec).strftime(
             "%Y-%m-%dT%H:%M:%S")
 
         feed_result = FeedInfo(app_config=config,
