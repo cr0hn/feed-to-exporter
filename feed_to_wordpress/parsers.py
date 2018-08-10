@@ -33,6 +33,7 @@ class FeedInfo(object):
 
         self.body = ""
         self.link = ""
+        self.slug = ""
         self.content = ""
         self._tags = []
         self._categories = []
@@ -72,7 +73,7 @@ class FeedInfo(object):
         return {
             'title': self.title,
             'content': self.content,
-            'slug': slugify(self.title),
+            'slug': self.slug,
             'date': self.date,
             'format': 'standard',
             'status': self.post_status,

@@ -5,6 +5,8 @@ from feed_to_wordpress.parsers import FeedInfo
 
 def global_filter(feed: FeedInfo) -> dict:
 
+    results = {}
+
     if not feed.content:
         content = [
             feed.body,
@@ -19,11 +21,13 @@ def global_filter(feed: FeedInfo) -> dict:
         #
         feed.add_tag(slugify(feed.feed_source))
 
-        return {
-            "content": "\n".join(content)
-        }
-    else:
-        return {}
+        results["content"] = "\n".join(content)
+
+    if feed.feed_source:
+        results['slug'] = f"{feed.date.split('T')[0]}-" \
+                          f"{slugify(feed.feed_source)}-{slugify(feed.title)}"
+
+    return results
 
 
 def title_filter(field_value: str) -> dict:
