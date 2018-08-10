@@ -42,15 +42,24 @@ def find_matching(keywords: Iterable,
 
             if type(source) in (list, set, tuple):
                 for x in source:
-                    x_clean: str = unidecode.unidecode(x)
-
                     if not case_sensitive:
-                        x_clean = x_clean.lower()
+                        x_clean = x.lower()
+                    else:
+                        x_clean = x
+
+                    x_clean = unidecode.unidecode(x_clean)
 
                     if keyword in x_clean:
                         return True
             else:
-                if keyword in source:
+                if not case_sensitive:
+                    source_clean = source.lower()
+                else:
+                    source_clean = source
+
+                source_clean = unidecode.unidecode(source_clean)
+
+                if keyword in source_clean:
                     return True
 
     return False
