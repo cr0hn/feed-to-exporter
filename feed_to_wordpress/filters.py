@@ -10,7 +10,7 @@ def global_filter(feed: FeedInfo) -> dict:
     if not feed.content:
         content = [
             feed.body,
-            "",
+            "<br />",
             f'<a target="_blank" href="{feed.link}">{feed.link}</a>',
             "",
             f"Fuente: <b>{feed.feed_source}</b>"
