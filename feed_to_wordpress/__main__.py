@@ -38,6 +38,13 @@ def main():
                         required=False,
                         help='using this mode f2w will try to discover '
                              'mapping and filters')
+    parser.add_argument('--devel',
+                        dest='develop_mode',
+                        action="store_true",
+                        default=False,
+                        required=False,
+                        help="running in develop mode doesn't publish "
+                             "Wordpress Post")
     args = parser.parse_args()
 
     #

@@ -20,11 +20,13 @@ class AppConfig:
                  filters_file: str,
                  wordpress_url: str,
                  discover_mode: bool,
+                 develop_mode: bool = False,
                  mapping_path: str = "mapping.json",
                  feed: str = None):
         self.feed = feed
         self.user = user
         self.app_auth = app_auth
+        self.develop_mode = develop_mode
         self.discover_mode = discover_mode
 
         self.filters_file = None

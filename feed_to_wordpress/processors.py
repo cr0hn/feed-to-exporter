@@ -8,7 +8,9 @@ def process_feed(config: AppConfig):
     # Load mapping file
     #
     for feed_entry in parse_entries(config):
-        publish_post(feed_entry, config)
+
+        if not config.develop_mode:
+            publish_post(feed_entry, config)
 
 
 __all__ = ("process_feed", )
