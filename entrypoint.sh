@@ -1,19 +1,35 @@
 #!/usr/bin/env bash
 
-if [ -n "${F2W_DISCOVER_MODE}" ]; then
-    # Run discover mode
-    f2w -W ${F2W_WORDPRESS_SITE} \
-        -U ${F2W_USER} \
-        -D \
-        -A "${F2W_APPLICATION_PASSWORD}" \
-        "${F2W_FEED}"
-else
-    # Run normal mode
-    f2w -W ${F2W_WORDPRESS_SITE} \
-        -F ${F2W_FILTERS} \
-        -U ${F2W_USER} \
-        -m ${F2W_MAPPING} \
-        -A "${F2W_APPLICATION_PASSWORD}" \
-        "${F2W_FEED}"
-
+if [ -z "${f2e_FILTERS_GIT}" ]; then
+    echo "[!] Environment vars 'f2e_FILTERS_GIT' needed"
+    exit 1
 fi
+
+if [ -z "${f2e_CMD_PARAMETERS}" ]; then
+    echo "[!] Environment vars 'f2e_CMD_PARAMETERS' needed"
+    exit 1
+fi
+
+if [ -z "${f2e_CHECK_TIME}" ]; then
+    echo "[!] Environment vars 'f2e_CHECK_TIME' needed"
+    exit 1
+fi
+
+#
+# First clone of GIT
+#
+mkdir /tmp/f2e
+cd /tmp/f2e
+
+git clone ${f2e_FILTERS_GIT} /tmp/f2e/repo
+
+while [ 1 ];
+do
+    echo f2e ${f2e_CMD_PARAMETERS} /tmp/f2e/repo/ | sh
+    sleep ${f2e_CHECK_TIME}s
+
+    # Update git
+    cd /tmp/f2e/repo
+    git pull
+    cd /tmp/f2e
+done

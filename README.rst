@@ -6,67 +6,68 @@ This project allow to get RSS Feed and create new Wordpress post from them.
 Pre-requisites
 --------------
 
+Wordpress Mode
+++++++++++++++
+
 - You must install the Wordpress plugin: `Application Passwords <https://es.wordpress.org/plugins/application-passwords/>`_
 - You must create a new Application Password
 - **Python 3.6 or above**
 
+
 mapping.json format
 -------------------
+
+Wordpress Mode
+++++++++++++++
 
 The mapping file has this format:
 
 .. code-block:: json
 
     {
-      "mapping": {
-        "title": "title",
-        "body": "summary",
-        "link": "link"
-      },
-      "fixed": {
-        "tags": ["one", "two", "general"],
-        "categories": ["mycategory"]
-      }
-    }
-
-By default ``title`` and ``link`` keys are mapped like above example. Then, you can write:
-
-.. code-block:: json
-
-    {
+      "feed": "http://www.xxxx.es/blogs/xxxx/feed/",
+      "exportMethod": "wordpress",
       "mapping": {
         "body": "summary"
       },
       "fixed": {
         "tags": ["one", "two", "general"],
-        "categories": ["mycategory"]
+        "categories": [
+          {
+            "category": "subcategory",
+            "parent": "top-category"
+          }
+        ],
+        "post_status": "publish"
       }
     }
 
-``f2w`` can run in ``discover`` mode. So, you can specify the RSS Feed source in the mapping.json, like that:
+Mongo Mode
+++++++++++
+
 
 .. code-block:: json
 
     {
-      "feed": "https://myfeedsource.som",
-      "mapping": {
-        "body": "summary"
-      },
+      "feed": "http://www.xxxx.es/blogs/xxxx/feed/",
+      "exportMethod": "mongo",
       "fixed": {
-        "tags": ["one", "two", "general"],
-        "categories": ["mycategory"]
+        "categories": [
+          {
+            "category": "subcategory",
+            "parent": "top-category"
+          }
+        ]
       }
     }
-
-
 
 Mapping key
 +++++++++++
 
-``mapping`` indicates how ``f2w`` must match the input feed values to the wordpress result.
+``mapping`` indicates how ``f2e`` must match the input feed values to the wordpress result.
 
-- Left values of mapping (title, body, link) are always the same.
-- Right values are the key names in feed where ``f2w`` must map to the output.
+- Left values of mapping will be the variables names of exported objects.
+- Right values are the key names in feed where ``f2e`` must map to the output.
 
 For example:
 
@@ -124,14 +125,16 @@ Then, if we want to recover the title, description and published date, we must w
       }
     }
 
-Fixed key
-+++++++++
+Fixed keys
+++++++++++
 
-Some times it should be interesting to add some static values to the post results, like tags or categories.
+Some times it should be interesting to add some static values to the result dict object. You can use fixed keys for this purpose.
 
-You can specify any values as keys but **only tags and categories** have sense to be send to Wordpress API.
+**Wordpress mode**
 
-You can specify *tags* and *categories*. ``f2w`` will try to resolve the tag/category or create if it doesn't exits.
+In Wordpress there're two special keys: ``tags`` and ``categories``.
+
+You can specify *tags* and *categories*. ``f2e`` will try to resolve the tag/category or create if it doesn't exits in the Wordpress site.
 
 Filters
 -------
@@ -145,8 +148,8 @@ Basics
 
 .. code-block:: python
 
-    from feed_to_wordpress.filters import FeedInfo
-    from feed_to_wordpress.exceptions import FeedToWordpressNotValidInfoFound
+    from feed_to_exporter.filters import FeedInfo
+    from feed_to_exporter.exceptions import FeedToWordpressNotValidInfoFound
 
 
 
@@ -227,18 +230,21 @@ Filters execution order are defined by the order indicated in the ``INDIVIDUAL_V
 
 The parameters passed in each individual filter function is the value of the field.
 
-Input fields
-++++++++++++
+Result data structure
++++++++++++++++++++++
 
-FeedInfo has these properties:
+``f2e`` export collected data from feed to a dictionary. Depending of the export method you want, it need some different keys:
+
+**Wordpress**
+
+FeedInfoWordpress has these properties:
 
 - title: str
 - slug: str
-- app_config: str
 - link: str
 - feed_source: str
 - body: str -> raw information from Feed mapping
-- content: str -> content that will send to the Wordpress Post. By default is a composition of: body + html link + feed_source. You can see at internal filters (``feed_to_wordpress.filters.py``)
+- content: str -> content that will send to the Wordpress Post. By default is a composition of: body + html link + feed_source. You can see at internal filters (``feed_to_exporter.filters.py``)
 - raw_feed_info: dict -> raw content of feed
 - ping_status: str (default: closed)
 - feed_source: str (default: closed)
@@ -247,6 +253,11 @@ FeedInfo has these properties:
 - date: str (default: now time, with format: %Y-%m-%dT%H:%M:%S)
 
 For fields ``ping_status``, ``feed_source``, ``post_status`` and ``comment_status`` you can check valid values at Wordpress REST API doc: https://developer.wordpress.org/rest-api/
+
+**Mongo**
+
+Mongo doesn't need any special value for the result dictionary. The whole dict will be stored into Mongo "as is".
+
 
 Validation rule
 +++++++++++++++
@@ -290,17 +301,22 @@ To enable this mode you must use the ``-D`` option and each m¡``mapping.json`` 
 
     > tree examples/
     examples
+    ├── __init__.py
     ├── site1.com
+    │   ├── __ini__.py
     │   ├── filters.py
     │   └── mapping.json
     └── other-site.com
-        ├── f2wSkip
+    │   ├── __ini__.py
+        ├── f2eSkip
         ├── filters.py
         └── mapping.json
 
+**IMPORTANT**: all of folders need the file ``__init__.py`` con convert it into a Python package.
+
 **Ignoring directory**
 
-If you want that a directory will be ignored, only create a file called ``f2wSkip`` into the directory and the engine will ignore it.
+If you want that a directory will be ignored, only create a file called ``f2eSkip`` into the directory and the engine will ignore it.
 
 
 Running Examples
@@ -313,64 +329,108 @@ Install:
 
 .. code-block:: bash
 
-    > pip install -U feed-to-wordpress
+    > pip install -U feed-to-exporter
+
+**Wordpress mode**
+
 
 Basic Usage:
 
 
 .. code-block:: bash
 
-    > f2w -W https://mysite.com -U user -m examples/mapping.json -A "XXXX XXXX XXXX XXXX XXXX XXXX" "http://www.mjusticia.gob.es/cs/Satellite?c=Page&cid=1215197792452&lang=es_es&pagename=eSEDE%2FPage%2FSE_DetalleRSS"
+    > f2e wordpress -W https://mywordpress.com -U user -A "XXXX XXXX XXXX XXXX XXXX XXXX" examples/
 
 Where ``-A`` indicates the Application Password
 
-Using a filter file:
+For more help type ``-h``:
 
 .. code-block:: bash
 
-    > f2w -W https://mysite.com -F filters.py -U user -m examples/mapping.json -A "XXXX XXXX XXXX XXXX XXXX XXXX" "http://www.mjusticia.gob.es/cs/Satellite?c=Page&cid=1215197792452&lang=es_es&pagename=eSEDE%2FPage%2FSE_DetalleRSS"
+    > f2e wordpress -h
+
+    usage: f2e wordpress [-h] --wordpress-url WORDPRESS_URL --user USER --app-auth
+                     APP_AUTH [--devel]
+                     [feed_source [feed_source ...]]
+
+    positional arguments:
+      feed_source           target url or path
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --wordpress-url WORDPRESS_URL, -W WORDPRESS_URL
+                            wordpress url
+      --user USER, -U USER  user to access to Wordpress
+      --app-auth APP_AUTH, -A APP_AUTH
+                            app auth code (from "Application Passwords" plugin)
+      --devel               running in develop mode doesn't publish Wordpress Post
+
+
+**MongoDB mode**
+
+With default parameters (mongo in localhost without authentication, database=f2e, collection=f2e)
+
+.. code-block:: bash
+
+    > f2e mongo examples/
+
+Setting some parameters:
+
+
+.. code-block:: bash
+
+    > f2e mongo -U mongoAdmin -M mongodb://10.0.0.1:27017 examples/
+
+For more help type ``-h``:
+
+.. code-block:: bash
+
+    > f2e mongo -h
+
+    usage: f2e mongo [-h] [--user USER] [--password PASSWORD]
+                 [--collection COLLECTION] [--database DATABASE]
+                 [--mongo-url MONGO_URN]
+                 [feed_source [feed_source ...]]
+
+    positional arguments:
+      feed_source           target url or path
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --user USER, -U USER  mongodb user
+      --password PASSWORD, -P PASSWORD
+                            mongodb password
+      --collection COLLECTION, -C COLLECTION
+                            mongo collection
+      --database DATABASE, -D DATABASE
+                            mongo database
+      --mongo-url MONGO_URN, -M MONGO_URN
+                            mongo URL. (Default: mongodb://127.0.0.1:27017/f2e)
+
 
 Using Docker
 ++++++++++++
 
+Docker only run in discovery mode and can schedule a new run each some seconds.
+
+You can mount a dir with the filters/mapping, but it's highly recommended to put it into a git repository.
+
 **Environment vars**
 
-- F2W_WORDPRESS_SITE: Wordpress site where to publish the new post
-- F2W_FILTERS: filters file, for example: filters.py
-- F2W_USER: Wordpress user
-- F2W_MAPPING: mapping.json location
-- F2W_APPLICATION_PASSWORD: Application password
-- F2W_FEED: Feed URL or path
-- F2W_DISCOVER_MODE: Feed URL or path
+- f2e_CMD_PARAMETERS: f2e running options
+- f2e_CHECK_TIME: time to launch in seconds
+- f2e_FILTERS_GIT: git where to download filters and mapping
 
-Running normal mode:
+**Running examples**
+
+Run feed each 3600 seconds:
 
 .. code-block:: bash
 
-    > ls examples/
-    filters.py mapping.json
-
-    > docker run --rm -v "$(pwd)/examples/":/tmp -e F2W_WORDPRESS_SITE=https://mysite.com \
-        -e F2W_FILTERS=/tmp/filters.py \
-        -e F2W_USER=user \
-        -e F2W_MAPPING=/tmp/mapping.json \
-        -e F2W_APPLICATION_PASSWORD="XXXX XXXX XXXX XXXX XXXX XXXX" \
-        -e F2W_FEED="http://www.mjusticia.gob.es/cs/Satellite?c=Page&cid=1215197792452&lang=es_es&pagename=eSEDE%2FPage%2FSE_DetalleRSS" \
-        cr0hn/feed-to-wordpress
-
-Running discover mode:
-
-.. code-block:: bash
-
-    > ls examples/
-    filters.py mapping.json
-
-    > docker run --rm -v "$(pwd)/examples/":/tmp/myfeeds -e F2W_WORDPRESS_SITE=https://mysite.com \
-        -e F2W_USER=user \
-        -e F2W_DISCOVER_MODE=1 \
-        -e F2W_APPLICATION_PASSWORD="XXXX XXXX XXXX XXXX XXXX XXXX" \
-        -e F2W_FEED="/tmp/myfeeds" \
-        cr0hn/feed-to-wordpress
+    > docker run --rm \
+        -e f2e_FILTERS_GIT=https://XXXXXXXXXXXXXX@github.com/cr0hn/myfeeds-repo.git \
+        -e f2e_CMD_PARAMETERS='wordpress -W https://mywordpress.com -U admin -A "XXXX XXXX XXXX XXXX XXXX XXXX"' \
+        -e f2e_CHECK_TIME=3600 f2e
 
 
 Contributing
@@ -378,9 +438,9 @@ Contributing
 
 Any collaboration is welcome!
 
-There're many tasks to do.You can check the `Issues <https://github.com/cr0hn/feed-to-wordpress/issues/>`_ and send us a Pull Request.
+There're many tasks to do.You can check the `Issues <https://github.com/cr0hn/feed-to-exporter/issues/>`_ and send us a Pull Request.
 
 License
 =======
 
-This project is distributed under `BSD 3 license <https://github.com/cr0hn/feed-to-wordpress/blob/master/LICENSE>`_
+This project is distributed under `BSD 3 license <https://github.com/cr0hn/feed-to-exporter/blob/master/LICENSE>`_

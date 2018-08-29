@@ -1,20 +1,19 @@
 import requests
 
-from feed_to_wordpress.model import AppConfig
-from feed_to_wordpress.exceptions import FeedToWordpressException
+from feed_to_exporter.exceptions import FeedToWordpressException
 
 
-def check_post_already_exits(slug_title: str, config: AppConfig) -> bool:
+def check_post_already_exits(slug_title: str, config) -> bool:
     """
     Returns True if post already exits, False otherwise
     """
     response_draft = requests.get(
-        f"{config.wordpress_api_url}/posts?slug={slug_title}&status=draft",
+        f"{config.wordpress_url}/posts?slug={slug_title}&status=draft",
         headers=config.token)
 
     if not response_draft.json():
         response_published = requests.get(
-            f"{config.wordpress_api_url}/"
+            f"{config.wordpress_url}/"
             f"posts?slug={slug_title}&status=publish",
             headers=config.token)
 
@@ -28,8 +27,9 @@ def check_post_already_exits(slug_title: str, config: AppConfig) -> bool:
 
 def get_or_create_tag_or_category(tag_or_category: str,
                                   name: str,
-                                  config: AppConfig,
-                                  description: str = None) -> str:
+                                  config,
+                                  description: str = None,
+                                  parent_id_category: str = None) -> str:
     """
     Returns tag Id of wordpress
     :param tag_or_category: possible values: tag|category
@@ -46,7 +46,7 @@ def get_or_create_tag_or_category(tag_or_category: str,
         endpoint = "categories"
 
     response = requests.get(
-        f"{config.wordpress_api_url}/{endpoint}",
+        f"{config.wordpress_url}/{endpoint}",
         headers=config.token,
         json={"slug": name}
     )
@@ -59,11 +59,15 @@ def get_or_create_tag_or_category(tag_or_category: str,
             "slug": name
         }
 
+        if parent_id_category:
+            # Parent ID
+            json_data["parent"] = parent_id_category
+
         if description:
             json_data["description"] = description
 
         response = requests.post(
-            f"{config.wordpress_api_url}/{endpoint}",
+            f"{config.wordpress_url}/{endpoint}",
             headers=config.token,
             json=json_data
         )
@@ -71,7 +75,7 @@ def get_or_create_tag_or_category(tag_or_category: str,
         return response.json()['id']
 
 
-def publish_post(post_data: dict, config: AppConfig):
+def publish_post(post_data: dict, config):
     # -------------------------------------------------------------------------
     # Check if already exits this post
     # -------------------------------------------------------------------------
@@ -81,7 +85,7 @@ def publish_post(post_data: dict, config: AppConfig):
     print(f"    <*> Checking if '{slug}' already exits")
     if not a:
         print(f"    <*> Creating: Post with url '{slug}' doesn't exits")
-        response = requests.post(f"{config.wordpress_api_url}/posts",
+        response = requests.post(f"{config.wordpress_url}/posts",
                                  headers=config.token,
                                  json=post_data)
 
