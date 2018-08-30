@@ -76,9 +76,9 @@ def get_or_create_tag_or_category(tag_or_category: str,
         response_data = response.json()
 
         if response.status_code == 409:
-            return response_data.json()["data"]["term_id"]
+            return response_data["data"]["term_id"]
         else:
-            return response_data.json()['id']
+            return response_data['id']
 
 
 def publish_post(post_data: dict, config):
