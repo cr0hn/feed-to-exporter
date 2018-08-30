@@ -86,14 +86,15 @@ class MatchKeywords:
             self._keywords_mapping.append([
                 entry["keywords"],
                 entry["tagName"],
-                entry["tagDescription"]
+                entry["tagDescription"],
+                entry["parent"]
             ])
 
     def match_entries(self, sources: Iterable) -> Iterable:
         # Reset
         self.matches_found = False
 
-        for keywords, tag_name, tag_description in self._keywords_mapping:
+        for keywords, tag_name, tag_description, parent in self._keywords_mapping:
 
             if find_matching(keywords, sources):
                 self.matches_found = True

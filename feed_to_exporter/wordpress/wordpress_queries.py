@@ -1,3 +1,4 @@
+import slugify
 import requests
 
 from feed_to_exporter.exceptions import FeedToWordpressException
@@ -48,7 +49,7 @@ def get_or_create_tag_or_category(tag_or_category: str,
     response = requests.get(
         f"{config.wordpress_url}/{endpoint}",
         headers=config.token,
-        json={"slug": name}
+        json={"slug": slugify.slugify(name)}
     )
 
     if response.json():
@@ -56,7 +57,7 @@ def get_or_create_tag_or_category(tag_or_category: str,
     else:
         json_data = {
             "name": name,
-            "slug": name
+            "slug": slugify.slugify(name)
         }
 
         if parent_id_category:
@@ -72,7 +73,12 @@ def get_or_create_tag_or_category(tag_or_category: str,
             json=json_data
         )
 
-        return response.json()['id']
+        response_data = response.json()
+
+        if response.status_code == 409:
+            return response_data.json()["data"]["term_id"]
+        else:
+            return response_data.json()['id']
 
 
 def publish_post(post_data: dict, config):
