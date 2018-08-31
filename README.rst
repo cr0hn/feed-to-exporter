@@ -417,9 +417,10 @@ You can mount a dir with the filters/mapping, but it's highly recommended to put
 
 **Environment vars**
 
-- f2e_CMD_PARAMETERS: f2e running options
-- f2e_CHECK_TIME: time to launch in seconds
-- f2e_FILTERS_GIT: git where to download filters and mapping
+- F2E_CMD_PARAMETERS: f2e running options
+- F2E_CHECK_TIME: time to launch in seconds
+- F2E_FILTERS_GIT: git where to download filters and mapping
+- F2E_NOTIFY_TELEGRAM: Notify using a telegram bot. format:
 
 **Running examples**
 
@@ -428,9 +429,9 @@ Run feed each 3600 seconds:
 .. code-block:: bash
 
     > docker run --rm \
-        -e f2e_FILTERS_GIT=https://XXXXXXXXXXXXXX@github.com/cr0hn/myfeeds-repo.git \
-        -e f2e_CMD_PARAMETERS='wordpress -W https://mywordpress.com -U admin -A "XXXX XXXX XXXX XXXX XXXX XXXX"' \
-        -e f2e_CHECK_TIME=3600 f2e
+        -e F2E_FILTERS_GIT=https://XXXXXXXXXXXXXX@github.com/cr0hn/myfeeds-repo.git \
+        -e F2E_CMD_PARAMETERS='wordpress -W https://mywordpress.com -U admin -A "XXXX XXXX XXXX XXXX XXXX XXXX"' \
+        -e F2E_CHECK_TIME=3600 f2e
 
 
 Contributing
