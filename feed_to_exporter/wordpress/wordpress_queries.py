@@ -97,6 +97,8 @@ def publish_post(post_data: dict, config):
 
         if str(response.status_code).startswith("20"):
             print(f"    <*> Created: Post with url '{slug}' created")
+        elif str(response.status_code).startswith("500"):
+            print(f"    <EE> Server returned 500 when try to create '{slug}'")
         else:
             print(f"    <!> Can't create post with url '{slug}'. "
                   f"Error: {response.json()['message']}")
