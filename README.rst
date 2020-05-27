@@ -3,6 +3,11 @@ Feed to Wordpress Post
 
 This project allow to get RSS Feed and create new Wordpress post from them.
 
+Support this project
+--------------------
+
+Support this project (to solve issues, new features...) by applying the Github "Sponsor" button.
+
 Pre-requisites
 --------------
 
